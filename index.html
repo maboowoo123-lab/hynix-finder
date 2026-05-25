@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegis Stock Scanner | Hynix-Potentials Finder</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <h1>AEGIS</h1>
+            </div>
+            <nav>
+                <a href="#" class="active" id="nav-dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                    Dashboard
+                </a>
+                <a href="#" id="nav-formula">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    The Formula
+                </a>
+                <a href="#" id="nav-settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Webhooks
+                </a>
+            </nav>
+            <div class="system-status">
+                <div class="status-indicator"></div>
+                <span>System Online</span>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header>
+                <h2>Hynix-Potentials Finder</h2>
+                <button class="btn-scan" id="btn-scan">INITIATE SCAN</button>
+            </header>
+
+            <div class="view-section" id="view-dashboard">
+            <div class="dashboard-grid">
+                <!-- Live Matches Panel -->
+                <section class="card matches-panel">
+                    <h3>Top Candidates (Live)</h3>
+                    <div class="candidates-list" id="candidates-list">
+                        <!-- Filled by JS -->
+                    </div>
+                </section>
+
+                <!-- Console Panel -->
+                <section class="card console-panel">
+                    <h3>Scanner Terminal</h3>
+                    <div class="terminal-window" id="terminal-window">
+                        <div class="line"><span class="time">[08:00:00]</span> SYSTEM READY.</div>
+                        <div class="line"><span class="time">[08:00:01]</span> Awaiting manual scan or scheduled trigger.</div>
+                    </div>
+                </section>
+
+                <!-- Score Radar Panel -->
+                <section class="card details-panel">
+                    <h3>Formula Analysis</h3>
+                    <div class="analysis-content" id="analysis-content">
+                        <div class="placeholder-text">Select a candidate to view analysis</div>
+                    </div>
+                </section>
+
+                <!-- Webhook Preview Panel -->
+                <section class="card webhook-panel">
+                    <h3>Notification Preview</h3>
+                    <div class="chat-preview">
+                        <div class="chat-header">Aegis Bot</div>
+                        <div class="chat-message" id="chat-message">
+                            Run a scan to generate the daily notification preview.
+                        </div>
+                    </div>
+                    <div class="webhook-controls">
+                        <input type="text" placeholder="Enter Discord/Slack Webhook URL" class="webhook-input" id="webhook-url">
+                        <button class="btn-test" id="btn-test">TEST SEND</button>
+                    </div>
+                </section>
+            </div>
+            </div>
+
+            <!-- The Formula View -->
+            <div class="view-section" id="view-formula" style="display: none;">
+                <div class="card formula-card">
+                    <h3>스코어링 가중치 설정 (Hynix Formula Weights)</h3>
+                    <p style="color:var(--text-muted); margin-bottom:2rem;">각 지표별 스캐너의 중요도(가중치)를 설정합니다. 합산 점수에 반영됩니다.</p>
+                    
+                    <div class="slider-group">
+                        <label>Turnaround (흑자 전환 기대감) <span class="val">30%</span></label>
+                        <input type="range" min="0" max="100" value="30" class="neon-slider">
+                    </div>
+                    <div class="slider-group">
+                        <label>Niche Monopoly (글로벌 독점력/선점) <span class="val">25%</span></label>
+                        <input type="range" min="0" max="100" value="25" class="neon-slider">
+                    </div>
+                    <div class="slider-group">
+                        <label>Industry Tailwind (성장 산업 수혜) <span class="val">20%</span></label>
+                        <input type="range" min="0" max="100" value="20" class="neon-slider">
+                    </div>
+                    <div class="slider-group">
+                        <label>Institutional Inflow (외인/기관 수급) <span class="val">15%</span></label>
+                        <input type="range" min="0" max="100" value="15" class="neon-slider">
+                    </div>
+                    <div class="slider-group">
+                        <label>Target Re-rating (목표가/신용도 상향) <span class="val">10%</span></label>
+                        <input type="range" min="0" max="100" value="10" class="neon-slider">
+                    </div>
+                    <button class="btn-test" style="margin-top: 2rem; width: 200px;">SAVE WEIGHTS</button>
+                </div>
+            </div>
+
+            <!-- Webhooks View -->
+            <div class="view-section" id="view-webhooks" style="display: none;">
+                <div class="card webhook-setup-card">
+                    <h3>메신저 알림 연동 (Webhook Setup)</h3>
+                    <p style="color:var(--text-muted); margin-bottom:2rem;">매일 아침 8시 30분, 스캐닝된 추천 종목을 받아볼 메신저 웹훅 URL을 등록하세요.</p>
+                    
+                    <div class="input-group">
+                        <label>Discord Webhook URL</label>
+                        <input type="text" placeholder="https://discord.com/api/webhooks/..." class="webhook-input">
+                    </div>
+                    <div class="input-group" style="margin-top:1.5rem;">
+                        <label>Telegram Bot Token & Chat ID</label>
+                        <input type="text" placeholder="bot123456:ABC... / chat_id=123..." class="webhook-input">
+                    </div>
+                    <div class="input-group" style="margin-top:1.5rem;">
+                        <label>Slack Webhook URL</label>
+                        <input type="text" placeholder="https://hooks.slack.com/services/..." class="webhook-input">
+                    </div>
+                    
+                    <div style="display:flex; gap:1rem; margin-top:2rem;">
+                        <button class="btn-test" style="width: 150px;">SAVE</button>
+                        <button class="btn-scan" style="width: 150px;">TEST ALL</button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
