@@ -8,8 +8,10 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.6.5",
     "cheerio": "^1.2.0",
+    "dotenv": "^17.4.2",
     "express": "^4.18.2",
     "node-cron": "^3.0.3"
   },
