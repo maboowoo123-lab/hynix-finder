@@ -10,6 +10,14 @@ const chatMessage = document.getElementById('chat-message');
 const btnTest = document.getElementById('btn-test');
 const webhookUrl = document.getElementById('webhook-url');
 
+function updateAnalysisPanel(data, score) {
+    const countryTag = data.country === 'US' ? '🇺🇸' : '🇰🇷';
+    const currency = data.country === 'US' ? '$' : '₩';
+    
+    // Logic updated to reflect current DOM structure
+    showAnalysis(data, score, currency);
+}
+
 // Utils
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const getTime = () => {
@@ -53,9 +61,9 @@ btnScan.addEventListener('click', async () => {
     await sleep(800);
     logToTerminal('Applying [Turnaround] constraints...', 'highlight');
     await sleep(500);
-    logToTerminal('SCAN COMPLETE. Found critical matches.', 'success');
+    logToTerminal('SCAN COMPLETE. Found critical global matches.', 'success');
 
-    currentCandidates = scanData.candidates;
+    currentCandidates = [...scanData.candidatesKR, ...scanData.candidatesUS];
     let topMatch = null;
 
     currentCandidates.forEach((data, index) => {
@@ -65,34 +73,38 @@ btnScan.addEventListener('click', async () => {
 
         const item = document.createElement('div');
         item.className = 'candidate-item';
+        const countryTag = data.country === 'US' ? '🇺🇸' : '🇰🇷';
+        const currency = data.country === 'US' ? '$' : '₩';
+        
         item.innerHTML = `
             <div class="cand-header">
                 <div>
-                    <div class="cand-name">${data.name}</div>
+                    <div class="cand-name">${countryTag} ${data.name}</div>
                     <div class="cand-ticker">${data.ticker}</div>
                 </div>
                 <div class="cand-score">${totalScore.toFixed(1)}</div>
             </div>
-            <div style="font-size:0.85rem; color:var(--text-muted)">₩${data.price} <span style="color:var(--accent-emerald)">${data.change}</span></div>
+            <div style="font-size:0.85rem; color:var(--text-muted)">${currency}${data.price} <span style="color:var(--accent-emerald)">${data.change}</span></div>
         `;
         
         item.addEventListener('click', () => {
             document.querySelectorAll('.candidate-item').forEach(el => el.classList.remove('selected'));
             item.classList.add('selected');
-            showAnalysis(data, totalScore);
+            showAnalysis(data, totalScore, currency);
         });
 
         candidatesList.appendChild(item);
     });
 
     // Select first by default
-    candidatesList.firstChild.click();
+    if (candidatesList.firstChild) candidatesList.firstChild.click();
 
     // Update Webhook Preview
     if (topMatch) {
+        const currency = topMatch.country === 'US' ? '$' : '₩';
         chatMessage.innerHTML = `🚀 **[Aegis Alert] High-Potential Target Detected!**\n\n` +
             `**${topMatch.name} (${topMatch.ticker})**\n` +
-            `Current Price: ₩${topMatch.price} (${topMatch.change})\n` +
+            `Current Price: ${currency}${topMatch.price} (${topMatch.change})\n` +
             `Aegis Total Score: **${topMatch.totalScore.toFixed(1)} / 100**\n\n` +
             `**Catalyst Overview:**\n- ${topMatch.reason}\n\n` +
             `*Hynix Formula:* TRN:${topMatch.scores.turnaround} | MNP:${topMatch.scores.monopoly} | TLW:${topMatch.scores.tailwind} | INF:${topMatch.scores.inflow} | RRT:${topMatch.scores.rerating}`;

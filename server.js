@@ -26,13 +26,16 @@ app.post('/api/test-webhook', async (req, res) => {
     const { webhookUrl, platform } = req.body;
     try {
         const scanData = await scrapeNaverFinance();
-        const topMatch = scanData.candidates[0];
         
-        const messageText = `🚀 **[Aegis Alert] Hynix-Potential Stock Detected!**\n\n` +
-                            `**${topMatch.name} (${topMatch.ticker})**\n` +
-                            `현재가: ₩${topMatch.price} (${topMatch.change})\n\n` +
-                            `**핵심 카탈리스트:**\n${topMatch.reason}\n\n` +
-                            `자세히 보기: ${topMatch.articleUrl}`;
+        let messageText = `🚀 **[Aegis Alert] 오늘의 글로벌 텐배거 후보 (Preview)**\n\n`;
+        messageText += `🇰🇷 **국내 주식 Top 3**\n`;
+        scanData.candidatesKR.forEach((stock, i) => {
+            messageText += `**[${i+1}] ${stock.name} (${stock.ticker})**\n현재가: ₩${stock.price} (${stock.change})\n카탈리스트: ${stock.reason}\n\n`;
+        });
+        messageText += `🇺🇸 **미국 주식 Top 3**\n`;
+        scanData.candidatesUS.forEach((stock, i) => {
+            messageText += `**[${i+1}] ${stock.name} (${stock.ticker})**\n현재가: $${stock.price} (${stock.change})\n카탈리스트: ${stock.reason}\n\n`;
+        });
 
         // 실제 디스코드 웹훅 전송 로직
         if (webhookUrl && webhookUrl.includes('discord.com/api/webhooks')) {
