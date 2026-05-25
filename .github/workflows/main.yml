@@ -1,0 +1,30 @@
+name: Aegis Daily Stock Scan
+
+on:
+  schedule:
+    # 한국 시간 기준 매일 오전 8시 30분 (UTC 기준 23시 30분)
+    - cron: '30 23 * * *'
+  workflow_dispatch: # 수동으로도 실행할 수 있도록 버튼 생성
+
+jobs:
+  run-scanner:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 저장소 코드 가져오기
+      uses: actions/checkout@v4
+      
+    - name: Node.js 환경 설정
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: 필수 라이브러리 설치
+      run: npm install
+      
+    - name: Aegis 스캐너 스크립트 실행 및 웹훅 전송
+      env:
+        DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      run: node run_scan.js
